@@ -13,17 +13,36 @@ const App = props => {
       .then(data => {
         setMovies(data);
         setLoading(false);
+        console.log(data);
       });
   }
-
   useEffect(() => {
     fetchMovies();
   }, []);
+///////////////////////////////fetch-genres
+/*const fetchGenres = () => {
+  setLoading(true);
 
+  return fetch('http://localhost:8000/genres')
+    .then(response => response.json())
+    .then(data => {
+      setMovies(data);
+      setLoading(false);
+      console.log(data);
+    });
+}*/
+/*useEffect(() => {
+  fetchGenres();
+}, []);*/
+///////////////////////////////
   return (
     <Layout>
       <Heading />
-
+      <Btnordina>
+      <Filtromovies movies={movies} setMovies={setMovies} />
+      <Filtrorating movies={movies} setMovies={setMovies}/>
+      <Filtrorecenti movies={movies} setMovies={setMovies}/>
+      </Btnordina>
       <MovieList loading={loading}>
         {movies.map((item, key) => (
           <MovieItem key={key} {...item} />
@@ -32,7 +51,123 @@ const App = props => {
     </Layout>
   );
 };
+///////////////////////////////////////////////////filtro a-z
+const Filtromovies = ({ movies, setMovies }) => {
+  const [isOpen, setIsOpen] = useState(false);
 
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+  const handleSelect = (option) => {
+    if (option === "A-Z") {
+      const sortedMovies = [...movies].sort((a, b) => a.title.localeCompare(b.title));
+      setMovies(sortedMovies);
+    } else if (option === "Z-A") {
+      const sortedMovies = [...movies].sort((a, b) => b.title.localeCompare(a.title));
+      setMovies(sortedMovies);
+    }
+    setIsOpen(false);
+  };
+  return (
+    <div className="dropdown">
+      <button style={{backgroundColor: '#9fa3ea', border:'2px solid black', borderRadius:'10px'}} className="dropdown-toggle" onClick={toggleMenu}>
+        Ordina per titolo
+      </button>
+      {isOpen && (
+        <ul className="dropdown-menu">
+          <li onClick={() => handleSelect("A-Z")}>A-Z</li>
+          <li onClick={() => handleSelect("Z-A")}>Z-A</li>
+        </ul>
+      )}
+    </div>
+  );
+};
+////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////filtro rating
+const Filtrorating = ({movies, setMovies})=>{
+  const [isOpenrating, setIsOpenrating] = useState(false);
+  const toggleMenurating = () => {
+    setIsOpenrating(!isOpenrating);
+  };
+  const handleSelectbyrating = (option)=>{
+    if(option === 'Ordine crescente'){
+      const sortedMoviesbyrating = [...movies].sort((a, b) => a.rating - b.rating);
+      setMovies(sortedMoviesbyrating);
+    }else if(option === 'Ordine decrescente'){
+      const sortedMoviesbyrating = [...movies].sort((a, b) => b.rating - a.rating);
+      setMovies(sortedMoviesbyrating);
+    }
+    setIsOpenrating(false);
+  }
+  return (
+    <div className="dropdown">
+      <button style={{backgroundColor: '#b3d6ba', border:'2px solid black', borderRadius:'10px'}} className="dropdown-toggle" onClick={toggleMenurating}>
+        Ordina per rating
+      </button>
+      {isOpenrating && (
+        <ul className="dropdown-menu">
+          <li onClick={() => handleSelectbyrating("Ordine crescente")}>Ordine Crescente</li>
+          <li onClick={() => handleSelectbyrating("Ordine decrescente")}>Ordine decrescente</li>
+        </ul>
+      )}
+    </div>
+  );
+}
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////filtro genres
+
+/////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////filtro più recenti
+const Filtrorecenti = ({movies, setMovies})=>{
+  const [isOpenrecenti, setIsOpenrecenti] = useState(false);
+  const toggleMenurecenti = () => {
+    setIsOpenrecenti(!isOpenrecenti);
+  };
+  const handleSelectbyrecenti = (option)=>{
+    if(option === 'Dal più recente'){
+      const sortedMoviesbyrecenti = [...movies].sort((a, b) => b.year - a.year);
+      setMovies(sortedMoviesbyrecenti);
+    }else if(option === 'Dal meno recente'){
+      const sortedMoviesbyrecenti = [...movies].sort((a, b) => a.year - b.year);
+      setMovies(sortedMoviesbyrecenti);
+    }
+    setIsOpenrecenti(false);
+  }
+  return (
+    <div className="dropdown">
+      <button style={{backgroundColor: '#eae6b9', border:'2px solid black', borderRadius:'10px'}} className="dropdown-toggle" onClick={toggleMenurecenti}>
+        Recenti
+      </button>
+      {isOpenrecenti && (
+        <ul className="dropdown-menu">
+          <li onClick={() => handleSelectbyrecenti("Dal più recente")}>Dal più recente</li>
+          <li onClick={() => handleSelectbyrecenti("Dal meno recente")}>Dal meno recente</li>
+        </ul>
+      )}
+    </div>
+  );
+}
+////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////button
+const Btnordina = ({children})=>{
+  const [isOpenordina, setIsOpenordina] = useState(false);
+  const toggleMenuordina = () => {
+    setIsOpenordina(!isOpenordina);
+  }
+    return(
+      <div>
+    <button style={{color: '#912a2a', border:'2px solid black', borderRadius:'10px'}} className="dropdown-toggle" onClick={toggleMenuordina}>
+          Ordina
+    </button>
+        {isOpenordina && (
+          <ul className="dropdown-menu">
+            <li>{children}</li>
+          </ul>
+        )}
+    </div>
+    );
+  }
+///////////////////////////////////////////////////////////
 const Layout = props => {
   return (
     <section className="bg-white dark:bg-gray-900">
