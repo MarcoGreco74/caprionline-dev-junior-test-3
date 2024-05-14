@@ -19,22 +19,6 @@ const App = props => {
   useEffect(() => {
     fetchMovies();
   }, []);
-///////////////////////////////fetch-genres
-/*const fetchGenres = () => {
-  setLoading(true);
-
-  return fetch('http://localhost:8000/genres')
-    .then(response => response.json())
-    .then(data => {
-      setMovies(data);
-      setLoading(false);
-      console.log(data);
-    });
-}*/
-/*useEffect(() => {
-  fetchGenres();
-}, []);*/
-///////////////////////////////
   return (
     <Layout>
       <Heading />
